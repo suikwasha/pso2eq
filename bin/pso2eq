@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require "open-uri"
+require "nokogiri"
+
+latest_notify = ""
+if File.exists?("./latest_notify") then
+  latest_notify = File.read("./latest_notify")
+end
+
+p latest_notify 
+
+source = open("http://pso2.swiki.jp/index.php?Comments%2F%E7%B7%8A%E6%80%A5%E6%8E%B2%E7%A4%BA%E6%9D%BF%2FShip2").read
+doc = Nokogiri::HTML.parse(source, nil, nil)
+
+new_latest_notify = doc.xpath('//ul[@class="list1"]/li').last.text
+
+p new_latest_notify
+
+if !latest_notify.include?(new_latest_notify) then
+  File.write("./latest_notify", new_latest_notify) 
+  exit
+end
+
+abort
